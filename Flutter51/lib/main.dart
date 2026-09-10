@@ -52,6 +52,7 @@ class _AgendamentoEventoTelaState extends State<AgendamentoEventoTela> {
 ];
 
 static const List<String> _tagsPadrao = [];
+static const bool _lembretePadrao = true;
 
   late DateTime _dataSelecionada;
   late TimeOfDay _horarioSelecionado;
@@ -60,6 +61,7 @@ static const List<String> _tagsPadrao = [];
   late Visibilidade _visibilidadeSelecionada;
   late Map<String, bool> _servicosSelecionados;
   late List <String> _tagsSelecionadas;
+  late bool _notificacaoAtivada;
 
   @override
   void initState() {
@@ -76,6 +78,7 @@ static const List<String> _tagsPadrao = [];
       _visibilidadeSelecionada = _visibilidadePadrao;
       _servicosSelecionados = Map<String, bool>.from(_servicosPadrao);
       _tagsSelecionadas = List<String>.from(_tagsPadrao);
+      _notificacaoAtivada = _lembretePadrao;
 
     });
     print('[DEBUG] Formulario resetado para os valores padrao.');
@@ -94,6 +97,7 @@ static const List<String> _tagsPadrao = [];
     print('Visibilidade: $_visibilidadeSelecionada');
     print('Serviços Adicionados: $_servicosSelecionados');
     print('Restriçoes Alimentares : (tags) $_tagsSelecionadas');
+    print('Lembrete automatico: $_notificacaoAtivada');
     print('=============================');
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -358,10 +362,69 @@ static const List<String> _tagsPadrao = [];
             const Divider(height: 32),
 
 
+            SwitchListTile(
+              title: const Text('Enviar Lembrete Automatico'),
+              subtitle: const Text(
+                'Notificar convidados 24 horas antes do evento',
+              ), 
+              value: _notificacaoAtivada,
+              onChanged: (bool ativo) {
+                setState(() {
+                _notificacaoAtivada = ativo;
+                });
+                print(
+                    '[DEBUG - Switch] Notificacao automatica alterada para: $ativo',
+                );
+              }
+            ),
+            const SizedBox(height: 24),
 
+          // Botões
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _resetarValores,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    side: const BorderSide(color: Colors.red),
+                  ),
+                  child: const Text('Cancelar'),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+
+                child: ElevatedButton(
+                  onPressed: _salvarFormulario,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Salva')
+                ),
+              ),
+            ],
+          ),
+const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 }
+
+
+
+//##Resumo do Desenvolvimento 
+
+
+//##1- O componente é o Slider e a variável do valor padrão é _quantidadeConvidadosPadrao
+
+//## 2 O outlinedButton tem apenas uma borda, o ElevatedButton tem fundo, Eles possuem alguns parâmetros diferentes, mas ambos usam o onPressed para a ação do clique
+
+//## 3 O setState() atualiza a tela quando o usuario muda a opção do Radio
+
+//## 4 .map pega cada item da lista e transforma em uma opção do dropdown
+
+//## 5 As tags são controladas pela lista _tagsSelecionadas, que guarda o que foi escolhido pelo usuário
